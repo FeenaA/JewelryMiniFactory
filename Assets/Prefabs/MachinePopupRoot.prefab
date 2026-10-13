@@ -744,6 +744,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4013975644085721936}
   - component: {fileID: 8972993536863692723}
+  - component: {fileID: 7431747889318170737}
   m_Layer: 5
   m_Name: MachinePopupRoot
   m_TagString: Untagged
@@ -780,6 +781,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7645018159132312285}
   m_CullTransparentMesh: 1
+--- !u!114 &7431747889318170737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7645018159132312285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d67180f96e148afb4331f74dbccd776, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JewelryMiniFactory.UI.MachinePopupView
+  backdrop: {fileID: 8356076642121966182}
+  actionButton: {fileID: 2384938759590137158}
+  titleText: {fileID: 9043238433497172923}
+  levelText: {fileID: 8568925021934945657}
+  productionText: {fileID: 5049699708406105756}
+  costText: {fileID: 6205917396394837239}
 --- !u!1 &8134433708360336878
 GameObject:
   m_ObjectHideFlags: 0

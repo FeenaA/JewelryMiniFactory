@@ -82,18 +82,72 @@ namespace JewelryMiniFactory.Economy.Tests
         }
 
         [Test]
-        public void Upgrade_WithFractionalPriceAndExactBalance_SpendsEntireBalance()
+        public void Upgrade_WithFractionalPrice_RoundsUpAndSpendsEntireBalance()
         {
-            var factory = CreateFactory(47.5);
+            var factory = CreateFactory(48);
             Assert.That(factory.TryUpgrade("GeodeMine"), Is.True);
             Assert.That(factory.TryUpgrade("GeodeMine"), Is.True);
-            Assert.That(factory.State.Balance, Is.EqualTo(22.5));
-            Assert.That(factory.GetNextUpgradeCost("GeodeMine"), Is.EqualTo(22.5));
+            Assert.That(factory.State.Balance, Is.EqualTo(23));
+            Assert.That(factory.GetNextUpgradeCost("GeodeMine"), Is.EqualTo(23));
             Assert.That(factory.TryUpgrade("GeodeMine"), Is.True);
             Assert.That(factory.State.Balance, Is.Zero);
             Assert.That(factory.State.Machines["GeodeMine"].Level, Is.EqualTo(4));
             Assert.That(factory.GetIncomePerSecond("GeodeMine"), Is.EqualTo(4));
-            Assert.That(factory.GetNextUpgradeCost("GeodeMine"), Is.EqualTo(33.75));
+            Assert.That(factory.GetNextUpgradeCost("GeodeMine"), Is.EqualTo(34));
+        }
+
+        [TestCase(22.5, false, 22.5, 3)]
+        [TestCase(22.999, false, 22.999, 3)]
+        [TestCase(23, true, 0, 4)]
+        [TestCase(23.25, true, 0.25, 4)]
+        public void Upgrade_UsesRoundedPriceForAffordabilityAndSpending(
+            double balance, bool expectedSuccess, double remaining, int expectedLevel)
+        {
+            var factory = new FactoryService(new TestConfigSource
+            {
+                InitialBalance = balance,
+                Machines = new[] { new MachineConfig("GeodeMine", true, 3, 1, 0, 10) }
+            });
+            // BaseUpgradeCost * 1.5^(3 - 1) = 22.5, rounded up to 23.
+            Assert.That(factory.GetNextUpgradeCost("GeodeMine"), Is.EqualTo(23));
+            Assert.That(factory.TryUpgrade("GeodeMine"), Is.EqualTo(expectedSuccess));
+            Assert.That(factory.State.Balance, Is.EqualTo(remaining).Within(1e-9));
+            Assert.That(factory.State.Machines["GeodeMine"].Status, Is.EqualTo(MachineStatus.Unlocked));
+            Assert.That(factory.State.Machines["GeodeMine"].Level, Is.EqualTo(expectedLevel));
+            Assert.That(factory.GetIncomePerSecond("GeodeMine"), Is.EqualTo(expectedLevel));
+            Assert.That(factory.GetNextUpgradeCost("GeodeMine"), Is.EqualTo(expectedSuccess ? 34 : 23));
+        }
+
+        [TestCase(50.5, false, 50.5)]
+        [TestCase(50.999, false, 50.999)]
+        [TestCase(51, true, 0)]
+        [TestCase(51.25, true, 0.25)]
+        public void Unlock_UsesRoundedPriceForAffordabilityAndSpending(
+            double balance, bool expectedSuccess, double remaining)
+        {
+            var factory = new FactoryService(new TestConfigSource
+            {
+                InitialBalance = balance,
+                Machines = new[] { new MachineConfig("GeodeCrusher", false, 1, 5, 50.5, 40) }
+            });
+            Assert.That(factory.GetUnlockCost("GeodeCrusher"), Is.EqualTo(51));
+            Assert.That(factory.TryUnlock("GeodeCrusher"), Is.EqualTo(expectedSuccess));
+            Assert.That(factory.State.Balance, Is.EqualTo(remaining).Within(1e-9));
+            var machine = factory.State.Machines["GeodeCrusher"];
+            Assert.That(machine.Status, Is.EqualTo(expectedSuccess ? MachineStatus.Unlocked : MachineStatus.Locked));
+            Assert.That(machine.Level, Is.EqualTo(expectedSuccess ? 1 : 0));
+            Assert.That(factory.GetIncomePerSecond(machine.Id), Is.EqualTo(expectedSuccess ? 5 : 0));
+        }
+
+        [Test]
+        public void AccrueIncome_FractionalFrameIntervals_PreserveFractionalBalance()
+        {
+            var factory = CreateFactory();
+            for (var frame = 0; frame < 60; frame++)
+                Assert.That(factory.AccrueIncome(1.0 / 60), Is.EqualTo(1.0 / 60).Within(1e-12));
+            Assert.That(factory.State.Balance, Is.EqualTo(1).Within(1e-12));
+            factory.AccrueIncome(0.25);
+            Assert.That(factory.State.Balance, Is.EqualTo(1.25).Within(1e-12));
         }
 
         [Test]
