@@ -3,13 +3,11 @@ guid: 22a2519b35bfa184ab57d5e5b79ac2bd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4412068169000790595
-    second: "\u0418\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0435 ChatGPT
-      12 \u043E\u043A\u0442. 2026 \u0433., 18_06_53-5_0"
+      213: -2464003953120871672
+    second: GeodeCrusher_0
   - first:
-      213: -5078230093564621402
-    second: "\u0418\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0435 ChatGPT
-      12 \u043E\u043A\u0442. 2026 \u0433., 18_06_53-5_1"
+      213: -409322011964551702
+    second: GeodeCrusher_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +49,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -118,8 +116,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\u0418\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0435 ChatGPT
-        12 \u043E\u043A\u0442. 2026 \u0433., 18_06_53-5_0"
+      name: GeodeCrusher_0
       rect:
         serializedVersion: 2
         x: 29
@@ -134,15 +131,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: db556ed506f25c2c0800000000000000
-      internalID: -4412068169000790595
+      spriteID: 80b7211a5791ecdd0800000000000000
+      internalID: -2464003953120871672
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\u0418\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0435 ChatGPT
-        12 \u043E\u043A\u0442. 2026 \u0433., 18_06_53-5_1"
+      name: GeodeCrusher_1
       rect:
         serializedVersion: 2
         x: 313
@@ -157,8 +153,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6adc161b2a08689b0800000000000000
-      internalID: -5078230093564621402
+      spriteID: aedca1e7ccbc15af0800000000000000
+      internalID: -409322011964551702
       vertices: []
       indices: 
       edges: []
@@ -167,7 +163,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -177,8 +173,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "\u0418\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0435 ChatGPT 12 \u043E\u043A\u0442. 2026 \u0433., 18_06_53-5_0": -4412068169000790595
-      "\u0418\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0435 ChatGPT 12 \u043E\u043A\u0442. 2026 \u0433., 18_06_53-5_1": -5078230093564621402
+      GeodeCrusher_0: -2464003953120871672
+      GeodeCrusher_1: -409322011964551702
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
