@@ -15,6 +15,13 @@ namespace JewelryMiniFactory.Economy
             Level = config.InitiallyUnlocked ? config.InitialLevel : 0;
         }
 
+        internal MachineState(string id, MachineStatus status, int level)
+        {
+            Id = id;
+            Status = status;
+            Level = level;
+        }
+
         internal void Unlock(int level)
         {
             Status = MachineStatus.Unlocked;

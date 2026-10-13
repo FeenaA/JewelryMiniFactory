@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JewelryMiniFactory.Economy.FactoryConfig
   initialBalance: 0
   upgradeCostMultiplier: 1.5
+  boostEnabled: 1
+  boostDuration: 30
+  boostMultiplier: 2
+  maxOfflineDuration: 10800
   machines:
   - id: GeodeMine
     initiallyUnlocked: 1

@@ -31,6 +31,38 @@ namespace JewelryMiniFactory.Economy
             State = new GameState(initialBalance, states);
         }
 
+        // Creates a new validated service; never exposes mutation of a running game's state.
+        internal static FactoryService Restore(IFactoryConfigSource source, GameSaveData data)
+        {
+            var factory = new FactoryService(source);
+            MachineConfig.ValidateAmount(data.Balance, nameof(data.Balance));
+            if (data.Machines == null || data.Machines.Count != factory.configs.Count)
+                throw new ArgumentException("Saved machine list does not match configuration.");
+            var states = new Dictionary<string, MachineState>(StringComparer.Ordinal);
+            double totalIncome = 0;
+            foreach (var machine in data.Machines)
+            {
+                if (machine == null || string.IsNullOrWhiteSpace(machine.Id) ||
+                    !factory.configs.TryGetValue(machine.Id, out var config) || states.ContainsKey(machine.Id))
+                    throw new ArgumentException("Invalid or duplicate saved machine ID.");
+                if ((machine.Status != MachineStatus.Locked && machine.Status != MachineStatus.Unlocked) ||
+                    (machine.Status == MachineStatus.Locked && (machine.Level != 0 || config.InitiallyUnlocked)) ||
+                    (machine.Status == MachineStatus.Unlocked && machine.Level < 1))
+                    throw new ArgumentException("Invalid saved machine status or level.");
+                if (machine.Status == MachineStatus.Unlocked) totalIncome += config.BaseIncome * machine.Level;
+                MachineConfig.ValidateAmount(totalIncome, nameof(totalIncome));
+                states.Add(machine.Id, new MachineState(machine.Id, machine.Status, machine.Level));
+            }
+            return new FactoryService(factory, new GameState(data.Balance, states));
+        }
+
+        private FactoryService(FactoryService template, GameState state)
+        {
+            configs = template.configs;
+            upgradeCostMultiplier = template.upgradeCostMultiplier;
+            State = state;
+        }
+
         public bool TryUnlock(string id)
         {
             if (id == null || !State.Machines.TryGetValue(id, out var machine) || machine.Status != MachineStatus.Locked)
