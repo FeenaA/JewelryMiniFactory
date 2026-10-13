@@ -53,7 +53,12 @@ namespace JewelryMiniFactory.Economy
                 MachineConfig.ValidateAmount(totalIncome, nameof(totalIncome));
                 states.Add(machine.Id, new MachineState(machine.Id, machine.Status, machine.Level));
             }
-            return new FactoryService(factory, new GameState(data.Balance, states));
+            var transactionIds = data.ProcessedTransactionIds ?? new List<string>();
+            var uniqueIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var id in transactionIds)
+                if (string.IsNullOrWhiteSpace(id) || !uniqueIds.Add(id))
+                    throw new ArgumentException("Invalid saved transaction IDs.");
+            return new FactoryService(factory, new GameState(data.Balance, states, transactionIds));
         }
 
         private FactoryService(FactoryService template, GameState state)
@@ -73,6 +78,41 @@ namespace JewelryMiniFactory.Economy
             State.SetBalance(State.Balance - cost);
             machine.Unlock(config.InitialLevel);
             return true;
+        }
+
+        public void AddCurrency(double amount)
+        {
+            MachineConfig.ValidateAmount(amount, nameof(amount));
+            State.SetBalance(State.Balance + amount);
+        }
+
+        /// <summary>Persists balance and transaction together before committing the reward in memory.</summary>
+        public bool TryCreditPurchase(string transactionId, double reward,
+            Func<double, IReadOnlyList<string>, bool> persist)
+        {
+            if (string.IsNullOrWhiteSpace(transactionId)) throw new ArgumentException("Transaction ID is required.", nameof(transactionId));
+            if (persist == null) throw new ArgumentNullException(nameof(persist));
+            MachineConfig.ValidateAmount(reward, nameof(reward));
+            foreach (var id in State.ProcessedTransactionIds)
+                if (id == transactionId) return true;
+            var balance = State.Balance + reward;
+            MachineConfig.ValidateAmount(balance, nameof(balance));
+            var ids = new List<string>(State.ProcessedTransactionIds) { transactionId };
+            if (!persist(balance, ids.AsReadOnly())) return false;
+            State.SetBalance(balance);
+            State.RecordTransaction(transactionId);
+            return true;
+        }
+
+        internal void RememberTransactions(IEnumerable<string> ids)
+        {
+            if (ids == null) return;
+            var known = new HashSet<string>(State.ProcessedTransactionIds, StringComparer.Ordinal);
+            foreach (var id in ids)
+            {
+                if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("Invalid transaction ID.");
+                if (known.Add(id)) State.RecordTransaction(id);
+            }
         }
 
         public bool TryUpgrade(string id)

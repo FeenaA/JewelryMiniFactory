@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using JewelryMiniFactory.Economy;
 using JewelryMiniFactory.UI;
+using JewelryMiniFactory.Purchasing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,12 +19,18 @@ namespace JewelryMiniFactory.Gameplay
         [SerializeField] private MachinePopupView machinePopup;
         [SerializeField] private Button boostButton;
         [SerializeField] private TMP_Text boostButtonText;
+        [SerializeField] private Button buyCoinsButton;
+        [SerializeField] private TMP_Text buyCoinsButtonText;
 
         private const float UiRefreshInterval = 0.1f;
         private const float AutoSaveInterval = 15;
         private readonly SaveService saveService = new SaveService();
         private FactoryService factory;
         private BoostService boost;
+        private IapPurchaseService iap;
+        private bool purchaseHistoryReady;
+        private int inputBlockedThroughFrame = -1;
+        private bool IsGameInputBlocked => (iap != null && iap.BlocksGameplayInput) || Time.frameCount <= inputBlockedThroughFrame;
         private DateTimeOffset lastIncomeUtc;
         private bool applicationPaused;
         private bool pauseRequested;
@@ -54,9 +61,11 @@ namespace JewelryMiniFactory.Gameplay
             machinePopup.UpgradeRequested += OnUpgradeRequested;
             machinePopup.Closed += OnPopupClosed;
             if (boostButton != null) boostButton.onClick.AddListener(OnBoostRequested);
+            if (buyCoinsButton != null) buyCoinsButton.onClick.AddListener(OnBuyCoinsRequested);
             machinePopup.Hide();
             RefreshUi(DateTimeOffset.UtcNow);
             SaveProgress();
+            InitializeIap();
         }
 
         private void InitializeGame(bool loadSavedProgress)
@@ -97,6 +106,64 @@ namespace JewelryMiniFactory.Gameplay
                 boost = newBoost;
                 lastIncomeUtc = now;
             }
+            purchaseHistoryReady = saveService.RestorePurchaseHistory(factory);
+        }
+
+        private async void InitializeIap()
+        {
+            try
+            {
+                if (factoryConfig.CoinsPackSmallReward < 1) throw new ArgumentOutOfRangeException(nameof(factoryConfig.CoinsPackSmallReward));
+                if (buyCoinsButton == null || buyCoinsButtonText == null)
+                    Debug.LogWarning("Assign the purchase Button and its Text (TMP) to GameController to enable the purchase UI.", this);
+                iap = new IapPurchaseService(FulfillPurchase);
+                iap.StateChanged += OnIapStateChanged;
+                RefreshIapUi();
+                await iap.InitializeAsync();
+            }
+            catch (Exception exception) { Debug.LogWarning("IAP unavailable: " + exception.Message, this); }
+        }
+
+        private bool FulfillPurchase(string transactionId)
+        {
+            if (factory == null || !purchaseHistoryReady) return false;
+            var now = DateTimeOffset.UtcNow;
+            if (!applicationPaused) AccrueIncomeUntil(now);
+            var fulfilled = factory.TryCreditPurchase(transactionId, factoryConfig.CoinsPackSmallReward, (balance, ids) =>
+            {
+                var data = SaveService.Capture(factory, boost, lastIncomeUtc);
+                data.Balance = balance;
+                data.ProcessedTransactionIds = new List<string>(ids);
+                return saveService.TrySaveData(data);
+            });
+            if (fulfilled)
+            {
+                saveElapsed = 0;
+                RefreshUi(now);
+            }
+            return fulfilled;
+        }
+
+        private void OnBuyCoinsRequested()
+        {
+            if (isActiveAndEnabled && !applicationPaused && !IsGameInputBlocked && purchaseHistoryReady) iap?.Buy();
+        }
+
+        private void OnIapStateChanged()
+        {
+            // Fake Store invokes callbacks before removing its dialog. Swallow that click's entire frame.
+            inputBlockedThroughFrame = Time.frameCount;
+            if (factory != null) RefreshUi(DateTimeOffset.UtcNow);
+        }
+
+        private void RefreshIapUi()
+        {
+            if (buyCoinsButton == null || buyCoinsButtonText == null) return;
+            buyCoinsButton.interactable = !IsGameInputBlocked && purchaseHistoryReady && iap != null && iap.CanPurchase;
+            buyCoinsButtonText.text = !purchaseHistoryReady ? "STORE UNAVAILABLE" :
+                iap == null ? "STORE LOADING" : iap.IsBusy ? "PURCHASE PROCESSING" :
+                iap.IsReady ? $"BUY {factoryConfig.CoinsPackSmallReward} COINS" :
+                iap.Status == "STORE LOADING" ? "STORE LOADING" : "STORE UNAVAILABLE";
         }
 
         public void RestartProgress()
@@ -125,6 +192,7 @@ namespace JewelryMiniFactory.Gameplay
             focusLost = false;
             applicationPaused = !isActiveAndEnabled;
             var cleared = saveService.TryClear();
+            purchaseHistoryReady = saveService.RestorePurchaseHistory(factory);
             selectedBuilding = null;
             saveElapsed = 0;
             uiRefreshElapsed = 0;
@@ -158,7 +226,7 @@ namespace JewelryMiniFactory.Gameplay
 
         private void OnBoostRequested()
         {
-            if (!isActiveAndEnabled || factory == null || applicationPaused) return;
+            if (!isActiveAndEnabled || factory == null || applicationPaused || IsGameInputBlocked) return;
             var now = DateTimeOffset.UtcNow;
             AccrueIncomeUntil(now);
             if (boost.TryActivate(now)) SaveProgress();
@@ -241,7 +309,7 @@ namespace JewelryMiniFactory.Gameplay
 
         private void OnUnlockRequested(BuildingView building)
         {
-            if (!isActiveAndEnabled || factory == null || applicationPaused) return;
+            if (!isActiveAndEnabled || factory == null || applicationPaused || IsGameInputBlocked) return;
             var now = DateTimeOffset.UtcNow;
             AccrueIncomeUntil(now);
             if (factory.TryUnlock(building.MachineId)) SaveProgress();
@@ -250,7 +318,7 @@ namespace JewelryMiniFactory.Gameplay
 
         private void OnOpenRequested(BuildingView building)
         {
-            if (!isActiveAndEnabled || factory == null || applicationPaused ||
+            if (!isActiveAndEnabled || factory == null || applicationPaused || IsGameInputBlocked ||
                 factory.State.Machines[building.MachineId].Status != MachineStatus.Unlocked) return;
             selectedBuilding = building;
             machinePopup.Show();
@@ -261,7 +329,7 @@ namespace JewelryMiniFactory.Gameplay
 
         private void OnUpgradeRequested()
         {
-            if (!isActiveAndEnabled || factory == null || applicationPaused || selectedBuilding == null || !machinePopup.IsOpen) return;
+            if (!isActiveAndEnabled || factory == null || applicationPaused || IsGameInputBlocked || selectedBuilding == null || !machinePopup.IsOpen) return;
             var now = DateTimeOffset.UtcNow;
             AccrueIncomeUntil(now);
             if (factory.TryUpgrade(selectedBuilding.MachineId)) SaveProgress();
@@ -272,25 +340,29 @@ namespace JewelryMiniFactory.Gameplay
 
         private void RefreshUi(DateTimeOffset now)
         {
+            var inputAllowed = !IsGameInputBlocked;
             var balance = factory.State.Balance;
             var productionMultiplier = boost.GetCurrentMultiplier(now);
             balanceText.text = $"Coins: {Math.Floor(balance):0}";
             totalProductionText.text = $"Production: {factory.GetTotalIncomePerSecond() * productionMultiplier:0.##}/sec";
             RefreshBoostUi(now);
+            RefreshIapUi();
             foreach (var building in buildings)
             {
                 var state = factory.State.Machines[building.MachineId];
                 var unlockCost = factory.GetUnlockCost(building.MachineId);
                 building.Render(state.Status == MachineStatus.Unlocked, state.Level,
-                    unlockCost, balance >= unlockCost);
+                    unlockCost, balance >= unlockCost, inputAllowed);
             }
+
+            machinePopup.SetInteractionEnabled(inputAllowed);
 
             if (selectedBuilding == null || !machinePopup.IsOpen) return;
             var id = selectedBuilding.MachineId;
             var machine = factory.State.Machines[id];
             var cost = factory.GetNextUpgradeCost(id);
             var canUpgrade = machine.Status == MachineStatus.Unlocked && machine.Level < int.MaxValue &&
-                !double.IsInfinity(cost) && !double.IsNaN(cost) && balance >= cost;
+                !double.IsInfinity(cost) && !double.IsNaN(cost) && balance >= cost && inputAllowed;
             machinePopup.Render(selectedBuilding.DisplayName, machine.Level,
                 factory.GetIncomePerSecond(id) * productionMultiplier, cost, canUpgrade);
         }
@@ -301,7 +373,7 @@ namespace JewelryMiniFactory.Gameplay
             boostButton.gameObject.SetActive(boost.Enabled);
             if (!boost.Enabled) return;
             var active = boost.IsActive(now);
-            boostButton.interactable = !active;
+            boostButton.interactable = !active && !IsGameInputBlocked;
             if (!active)
             {
                 boostButtonText.text = $"BOOST ×{boost.Multiplier:0.##}";
@@ -313,6 +385,12 @@ namespace JewelryMiniFactory.Gameplay
 
         private void OnDestroy()
         {
+            if (buyCoinsButton != null) buyCoinsButton.onClick.RemoveListener(OnBuyCoinsRequested);
+            if (iap != null)
+            {
+                iap.StateChanged -= OnIapStateChanged;
+                iap.Dispose();
+            }
             if (boostButton != null) boostButton.onClick.RemoveListener(OnBoostRequested);
             if (buildings != null)
                 foreach (var building in buildings)

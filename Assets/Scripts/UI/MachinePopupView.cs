@@ -21,16 +21,24 @@ namespace JewelryMiniFactory.UI
 
         public event Action UpgradeRequested;
         public event Action Closed;
+        private bool interactionEnabled = true;
+
+        public void SetInteractionEnabled(bool enabled)
+        {
+            interactionEnabled = enabled;
+            backdrop.interactable = enabled;
+            if (!enabled) actionButton.interactable = false;
+        }
 
         private void OnEnable()
         {
-            if (backdrop != null) backdrop.onClick.AddListener(Hide);
+            if (backdrop != null) backdrop.onClick.AddListener(RequestClose);
             if (actionButton != null) actionButton.onClick.AddListener(RequestUpgrade);
         }
 
         private void OnDisable()
         {
-            if (backdrop != null) backdrop.onClick.RemoveListener(Hide);
+            if (backdrop != null) backdrop.onClick.RemoveListener(RequestClose);
             if (actionButton != null) actionButton.onClick.RemoveListener(RequestUpgrade);
         }
 
@@ -52,9 +60,17 @@ namespace JewelryMiniFactory.UI
             levelText.text = $"Level: {level}";
             productionText.text = $"Production: {income:0.##}/sec";
             costText.text = $"Cost: {nextUpgradeCost:0}";
-            actionButton.interactable = canUpgrade;
+            actionButton.interactable = canUpgrade && interactionEnabled;
         }
 
-        private void RequestUpgrade() => UpgradeRequested?.Invoke();
+        private void RequestClose()
+        {
+            if (interactionEnabled) Hide();
+        }
+
+        private void RequestUpgrade()
+        {
+            if (interactionEnabled) UpgradeRequested?.Invoke();
+        }
     }
 }

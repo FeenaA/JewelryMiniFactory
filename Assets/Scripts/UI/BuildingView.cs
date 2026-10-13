@@ -44,16 +44,16 @@ namespace JewelryMiniFactory.UI
             if (unlockButton != null) unlockButton.onClick.RemoveListener(RequestUnlock);
         }
 
-        public void Render(bool unlocked, int level, double unlockCost, bool canUnlock)
+        public void Render(bool unlocked, int level, double unlockCost, bool canUnlock, bool interactionEnabled = true)
         {
             lockedState.SetActive(!unlocked);
             unlockedState.SetActive(unlocked);
             // The root Button's disabled tint reduces alpha. Let the Image own its state colour.
             buildingButton.transition = Selectable.Transition.None;
-            buildingButton.interactable = unlocked;
+            buildingButton.interactable = unlocked && interactionEnabled;
             buildingImage.CrossFadeColor(Color.white, 0, true, true);
             buildingImage.color = unlocked ? Color.white : new Color32(170, 170, 170, 255);
-            unlockButton.interactable = !unlocked && canUnlock;
+            unlockButton.interactable = !unlocked && canUnlock && interactionEnabled;
             unlockCostText.text = $"{unlockCost:0}";
             levelText.text = $"Lv. {level}";
         }

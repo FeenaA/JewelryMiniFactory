@@ -12,6 +12,13 @@ namespace JewelryMiniFactory.Economy
         public long LastIncomeUtcTicks;
         public long BoostStartedUtcTicks;
         public long BoostEndsUtcTicks;
+        public List<string> ProcessedTransactionIds;
+    }
+
+    [Serializable]
+    public sealed class PurchaseHistoryData
+    {
+        public List<string> TransactionIds;
     }
 
     [Serializable]

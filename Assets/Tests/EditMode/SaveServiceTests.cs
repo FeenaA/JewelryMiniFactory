@@ -231,9 +231,12 @@ namespace JewelryMiniFactory.Economy.Tests
         {
             var hadSave = PlayerPrefs.HasKey(SaveService.SaveKey);
             var previousSave = PlayerPrefs.GetString(SaveService.SaveKey);
+            var hadHistory = PlayerPrefs.HasKey(SaveService.PurchaseHistoryKey);
+            var previousHistory = PlayerPrefs.GetString(SaveService.PurchaseHistoryKey);
             var unrelatedKey = "JewelryMiniFactory.Test.Unrelated." + Guid.NewGuid().ToString("N");
             try
             {
+                PlayerPrefs.DeleteKey(SaveService.PurchaseHistoryKey);
                 PlayerPrefs.SetString(SaveService.SaveKey, "old progress");
                 PlayerPrefs.SetString(unrelatedKey, "keep");
                 var service = new SaveService();
@@ -248,7 +251,42 @@ namespace JewelryMiniFactory.Economy.Tests
             {
                 if (hadSave) PlayerPrefs.SetString(SaveService.SaveKey, previousSave);
                 else PlayerPrefs.DeleteKey(SaveService.SaveKey);
+                if (hadHistory) PlayerPrefs.SetString(SaveService.PurchaseHistoryKey, previousHistory);
+                else PlayerPrefs.DeleteKey(SaveService.PurchaseHistoryKey);
                 PlayerPrefs.DeleteKey(unrelatedKey);
+                PlayerPrefs.Save();
+            }
+        }
+
+        [Test, Category("UnityRuntime")]
+        public void Restart_ArchivesPurchaseIdsAndDoesNotRestoreSpentCoins()
+        {
+            var hadSave = PlayerPrefs.HasKey(SaveService.SaveKey);
+            var previousSave = PlayerPrefs.GetString(SaveService.SaveKey);
+            var hadHistory = PlayerPrefs.HasKey(SaveService.PurchaseHistoryKey);
+            var previousHistory = PlayerPrefs.GetString(SaveService.PurchaseHistoryKey);
+            try
+            {
+                PlayerPrefs.DeleteKey(SaveService.PurchaseHistoryKey);
+                var source = new TestConfigSource();
+                var factory = new FactoryService(source);
+                var boost = new BoostService(source);
+                var save = new SaveService();
+                factory.TryCreditPurchase("paid-order", 100, (balance, ids) => true);
+                Assert.That(save.TrySave(factory, boost, StartUtc), Is.True);
+                Assert.That(save.TryClear(), Is.True);
+                var fresh = new FactoryService(source);
+                Assert.That(save.RestorePurchaseHistory(fresh), Is.True);
+                Assert.That(fresh.TryCreditPurchase("paid-order", 100, (balance, ids) => false), Is.True);
+                Assert.That(fresh.State.Balance, Is.Zero);
+                Assert.That(fresh.State.ProcessedTransactionIds, Does.Contain("paid-order"));
+            }
+            finally
+            {
+                if (hadSave) PlayerPrefs.SetString(SaveService.SaveKey, previousSave);
+                else PlayerPrefs.DeleteKey(SaveService.SaveKey);
+                if (hadHistory) PlayerPrefs.SetString(SaveService.PurchaseHistoryKey, previousHistory);
+                else PlayerPrefs.DeleteKey(SaveService.PurchaseHistoryKey);
                 PlayerPrefs.Save();
             }
         }
