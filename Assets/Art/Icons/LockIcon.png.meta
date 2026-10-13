@@ -1,0 +1,1040 @@
+fileFormatVersion: 2
+guid: 2990a80c86b519b4ebb52bd4f457bdb1
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -958580646009965197
+    second: LockIcon_0
+  - first:
+      213: -7928708986929687372
+    second: LockIcon_1
+  - first:
+      213: -7002683267624319750
+    second: LockIcon_2
+  - first:
+      213: -5535238100589995943
+    second: LockIcon_3
+  - first:
+      213: 8979277669164225904
+    second: LockIcon_4
+  - first:
+      213: -4515744080307913093
+    second: LockIcon_5
+  - first:
+      213: -7882119376400416745
+    second: LockIcon_6
+  - first:
+      213: 783568219831526678
+    second: LockIcon_7
+  - first:
+      213: -2913796036462413743
+    second: LockIcon_8
+  - first:
+      213: 8337474522054409871
+    second: LockIcon_9
+  - first:
+      213: -7310143874650832626
+    second: LockIcon_10
+  - first:
+      213: -6541783107382804574
+    second: LockIcon_11
+  - first:
+      213: 8511156184284977622
+    second: LockIcon_12
+  - first:
+      213: 553344556534247313
+    second: LockIcon_13
+  - first:
+      213: 3856840152327990894
+    second: LockIcon_14
+  - first:
+      213: -6094119139737726828
+    second: LockIcon_15
+  - first:
+      213: -916150320831199457
+    second: LockIcon_16
+  - first:
+      213: -6816674440349312083
+    second: LockIcon_17
+  - first:
+      213: -2723766761403138704
+    second: LockIcon_18
+  - first:
+      213: -6164844088349900556
+    second: LockIcon_19
+  - first:
+      213: 9165822686331808263
+    second: LockIcon_20
+  - first:
+      213: 8123322003438217403
+    second: LockIcon_21
+  - first:
+      213: 2628324689180131599
+    second: LockIcon_22
+  - first:
+      213: -2313309108806268388
+    second: LockIcon_23
+  - first:
+      213: -8033454108419552220
+    second: LockIcon_24
+  - first:
+      213: 792134421764387972
+    second: LockIcon_25
+  - first:
+      213: 3815861310971604059
+    second: LockIcon_26
+  - first:
+      213: -2257059000368354788
+    second: LockIcon_27
+  - first:
+      213: -3585560862658056899
+    second: LockIcon_28
+  - first:
+      213: -6843413766820330466
+    second: LockIcon_29
+  - first:
+      213: 8457870149078722453
+    second: LockIcon_30
+  - first:
+      213: 5874540575667526327
+    second: LockIcon_31
+  - first:
+      213: 1449483719339122510
+    second: LockIcon_32
+  - first:
+      213: -6422358103993565652
+    second: LockIcon_33
+  - first:
+      213: -4177037456985816223
+    second: LockIcon_34
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LockIcon_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 17
+        width: 1233
+        height: 1229
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 375f2023bff62b2f0800000000000000
+      internalID: -958580646009965197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_1
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 931
+        width: 33
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b4db9a3f2197f190800000000000000
+      internalID: -7928708986929687372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_2
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 907
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af44eae7ba871de90800000000000000
+      internalID: -7002683267624319750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_3
+      rect:
+        serializedVersion: 2
+        x: 1141
+        y: 726
+        width: 16
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95810234642ee23b0800000000000000
+      internalID: -5535238100589995943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_4
+      rect:
+        serializedVersion: 2
+        x: 1204
+        y: 616
+        width: 35
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0759122477dcc9c70800000000000000
+      internalID: 8979277669164225904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_5
+      rect:
+        serializedVersion: 2
+        x: 1178
+        y: 568
+        width: 27
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7e7ca43faad451c0800000000000000
+      internalID: -4515744080307913093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_6
+      rect:
+        serializedVersion: 2
+        x: 1197
+        y: 542
+        width: 40
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7100e6c30361d9290800000000000000
+      internalID: -7882119376400416745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_7
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 457
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 615e758f42bcfda00800000000000000
+      internalID: 783568219831526678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_8
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 460
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15877ba51fd1097d0800000000000000
+      internalID: -2913796036462413743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_9
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 408
+        width: 11
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8e3cea67e8a4b370800000000000000
+      internalID: 8337474522054409871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_10
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 408
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e01807670e62d8a90800000000000000
+      internalID: -7310143874650832626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_11
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 388
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2affbc67ceae635a0800000000000000
+      internalID: -6541783107382804574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_12
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 385
+        width: 18
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d9dc20a473bd1670800000000000000
+      internalID: 8511156184284977622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_13
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 381
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19fae9241ffdda700800000000000000
+      internalID: 553344556534247313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_14
+      rect:
+        serializedVersion: 2
+        x: 1147
+        y: 373
+        width: 10
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6e29f22faf368530800000000000000
+      internalID: 3856840152327990894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_15
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 325
+        width: 56
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49016013ee65d6ba0800000000000000
+      internalID: -6094119139737726828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_16
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 359
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f170ffd132e2943f0800000000000000
+      internalID: -916150320831199457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_17
+      rect:
+        serializedVersion: 2
+        x: 1161
+        y: 337
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dab9e7976be4661a0800000000000000
+      internalID: -6816674440349312083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_18
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 318
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07dbc87cf8c333ad0800000000000000
+      internalID: -2723766761403138704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_19
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 321
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f0cc32e6f2127aa0800000000000000
+      internalID: -6164844088349900556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_20
+      rect:
+        serializedVersion: 2
+        x: 1163
+        y: 326
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70a260dab2b833f70800000000000000
+      internalID: 9165822686331808263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_21
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 312
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb8ac0ba256dbb070800000000000000
+      internalID: 8123322003438217403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_22
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 273
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0188fc116fa97420800000000000000
+      internalID: 2628324689180131599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_23
+      rect:
+        serializedVersion: 2
+        x: 1155
+        y: 272
+        width: 20
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1a4de93f9975efd0800000000000000
+      internalID: -2313309108806268388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_24
+      rect:
+        serializedVersion: 2
+        x: 1161
+        y: 286
+        width: 12
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42c004c2d00738090800000000000000
+      internalID: -8033454108419552220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_25
+      rect:
+        serializedVersion: 2
+        x: 1115
+        y: 256
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48430a74f0a3efa00800000000000000
+      internalID: 792134421764387972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_26
+      rect:
+        serializedVersion: 2
+        x: 1131
+        y: 197
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5c6e9025a9a4f430800000000000000
+      internalID: 3815861310971604059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_27
+      rect:
+        serializedVersion: 2
+        x: 1139
+        y: 198
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1a22fd2cc05da0e0800000000000000
+      internalID: -2257059000368354788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_28
+      rect:
+        serializedVersion: 2
+        x: 1139
+        y: 150
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3d29bc74678d3ec0800000000000000
+      internalID: -3585560862658056899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_29
+      rect:
+        serializedVersion: 2
+        x: 1109
+        y: 117
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1408a1ef6f4701a0800000000000000
+      internalID: -6843413766820330466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_30
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 33
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 597a730c614606570800000000000000
+      internalID: 8457870149078722453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_31
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 33
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ba1847678f868150800000000000000
+      internalID: 5874540575667526327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_32
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 33
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4f9be653c99d1410800000000000000
+      internalID: 1449483719339122510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_33
+      rect:
+        serializedVersion: 2
+        x: 641
+        y: 33
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2ebc1fd4533fd6a0800000000000000
+      internalID: -6422358103993565652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockIcon_34
+      rect:
+        serializedVersion: 2
+        x: 734
+        y: 35
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1630cd2509e2806c0800000000000000
+      internalID: -4177037456985816223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      LockIcon_0: -958580646009965197
+      LockIcon_1: -7928708986929687372
+      LockIcon_10: -7310143874650832626
+      LockIcon_11: -6541783107382804574
+      LockIcon_12: 8511156184284977622
+      LockIcon_13: 553344556534247313
+      LockIcon_14: 3856840152327990894
+      LockIcon_15: -6094119139737726828
+      LockIcon_16: -916150320831199457
+      LockIcon_17: -6816674440349312083
+      LockIcon_18: -2723766761403138704
+      LockIcon_19: -6164844088349900556
+      LockIcon_2: -7002683267624319750
+      LockIcon_20: 9165822686331808263
+      LockIcon_21: 8123322003438217403
+      LockIcon_22: 2628324689180131599
+      LockIcon_23: -2313309108806268388
+      LockIcon_24: -8033454108419552220
+      LockIcon_25: 792134421764387972
+      LockIcon_26: 3815861310971604059
+      LockIcon_27: -2257059000368354788
+      LockIcon_28: -3585560862658056899
+      LockIcon_29: -6843413766820330466
+      LockIcon_3: -5535238100589995943
+      LockIcon_30: 8457870149078722453
+      LockIcon_31: 5874540575667526327
+      LockIcon_32: 1449483719339122510
+      LockIcon_33: -6422358103993565652
+      LockIcon_34: -4177037456985816223
+      LockIcon_4: 8979277669164225904
+      LockIcon_5: -4515744080307913093
+      LockIcon_6: -7882119376400416745
+      LockIcon_7: 783568219831526678
+      LockIcon_8: -2913796036462413743
+      LockIcon_9: 8337474522054409871
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
