@@ -13,6 +13,7 @@ namespace JewelryMiniFactory.Economy.Tests
             public bool BoostEnabled => true;
             public double BoostDuration => 30;
             public double BoostMultiplier => 2;
+            public double MaxOfflineDuration => 10800;
             public IReadOnlyList<MachineConfig> Machines { get; set; }
             public IReadOnlyList<MachineConfig> GetMachines() => Machines;
         }

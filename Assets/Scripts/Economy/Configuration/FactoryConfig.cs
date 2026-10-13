@@ -13,6 +13,8 @@ namespace JewelryMiniFactory.Economy
         [SerializeField] private bool boostEnabled = true;
         [SerializeField, Min(0.01f)] private double boostDuration = 30;
         [SerializeField, Min(1)] private double boostMultiplier = 2;
+        [Header("Offline Production")]
+        [SerializeField, Min(0)] private double maxOfflineDuration = 10800;
         [Header("Machines")]
         [SerializeField] private MachineSettings[] machines =
         {
@@ -26,6 +28,7 @@ namespace JewelryMiniFactory.Economy
         public bool BoostEnabled => boostEnabled;
         public double BoostDuration => boostDuration;
         public double BoostMultiplier => boostMultiplier;
+        public double MaxOfflineDuration => maxOfflineDuration;
 
         public IReadOnlyList<MachineConfig> GetMachines()
         {

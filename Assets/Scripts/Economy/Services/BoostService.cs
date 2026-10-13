@@ -35,6 +35,13 @@ namespace JewelryMiniFactory.Economy
             return true;
         }
 
+        internal void RestoreWindow(DateTimeOffset startUtc, DateTimeOffset endUtc)
+        {
+            if (endUtc <= startUtc) throw new ArgumentException("Invalid saved Boost window.");
+            StartedAtUtc = startUtc.ToUniversalTime();
+            EndsAtUtc = endUtc.ToUniversalTime();
+        }
+
         public bool IsActive(DateTimeOffset utcNow) => Enabled && StartedAtUtc.HasValue &&
             utcNow >= StartedAtUtc.Value && utcNow < EndsAtUtc.Value;
 

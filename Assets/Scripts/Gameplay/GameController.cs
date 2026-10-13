@@ -20,10 +20,16 @@ namespace JewelryMiniFactory.Gameplay
         [SerializeField] private TMP_Text boostButtonText;
 
         private const float UiRefreshInterval = 0.1f;
+        private const float AutoSaveInterval = 15;
+        private readonly SaveService saveService = new SaveService();
         private FactoryService factory;
         private BoostService boost;
         private DateTimeOffset lastIncomeUtc;
         private bool applicationPaused;
+        private bool pauseRequested;
+        private bool focusLost;
+        private double maxOfflineDuration;
+        private float saveElapsed;
         private BuildingView selectedBuilding;
         private float uiRefreshElapsed;
 
@@ -31,28 +37,7 @@ namespace JewelryMiniFactory.Gameplay
         {
             try
             {
-                if (factoryConfig == null || balanceText == null || totalProductionText == null ||
-                    machinePopup == null || !machinePopup.HasRequiredReferences || buildings == null)
-                    throw new InvalidOperationException("Assign Factory Config, both HUD texts, Buildings and all MachinePopupView references in the Inspector.");
-
-                var newFactory = new FactoryService(factoryConfig);
-                var newBoost = new BoostService(factoryConfig);
-                if (newBoost.Enabled && (boostButton == null || boostButtonText == null))
-                    throw new InvalidOperationException("Assign Canvas/BoostButton and its Text (TMP) in the Inspector.");
-                var ids = new HashSet<string>(StringComparer.Ordinal);
-                foreach (var building in buildings)
-                {
-                    if (building == null || !building.HasRequiredReferences)
-                        throw new InvalidOperationException("Each BuildingView needs its Machine Id, buttons, state objects and text references.");
-                    if (!newFactory.State.Machines.ContainsKey(building.MachineId) || !ids.Add(building.MachineId))
-                        throw new InvalidOperationException("Building Machine Ids must be unique and match Factory Config: " + building.MachineId);
-                }
-                if (ids.Count != newFactory.State.Machines.Count)
-                    throw new InvalidOperationException("Assign one BuildingView for every configured machine.");
-
-                factory = newFactory;
-                boost = newBoost;
-                lastIncomeUtc = DateTimeOffset.UtcNow;
+                InitializeGame(true);
             }
             catch (Exception exception)
             {
@@ -70,7 +55,84 @@ namespace JewelryMiniFactory.Gameplay
             machinePopup.Closed += OnPopupClosed;
             if (boostButton != null) boostButton.onClick.AddListener(OnBoostRequested);
             machinePopup.Hide();
-            RefreshUi(lastIncomeUtc);
+            RefreshUi(DateTimeOffset.UtcNow);
+            SaveProgress();
+        }
+
+        private void InitializeGame(bool loadSavedProgress)
+        {
+            if (factoryConfig == null || balanceText == null || totalProductionText == null ||
+                machinePopup == null || !machinePopup.HasRequiredReferences || buildings == null)
+                throw new InvalidOperationException("Assign Factory Config, both HUD texts, Buildings and all MachinePopupView references in the Inspector.");
+
+            var newFactory = new FactoryService(factoryConfig);
+            var newBoost = new BoostService(factoryConfig);
+            if (newBoost.Enabled && (boostButton == null || boostButtonText == null))
+                throw new InvalidOperationException("Assign Canvas/BoostButton and its Text (TMP) in the Inspector.");
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var building in buildings)
+            {
+                if (building == null || !building.HasRequiredReferences)
+                    throw new InvalidOperationException("Each BuildingView needs its Machine Id, buttons, state objects and text references.");
+                if (!newFactory.State.Machines.ContainsKey(building.MachineId) || !ids.Add(building.MachineId))
+                    throw new InvalidOperationException("Building Machine Ids must be unique and match Factory Config: " + building.MachineId);
+            }
+            if (ids.Count != newFactory.State.Machines.Count)
+                throw new InvalidOperationException("Assign one BuildingView for every configured machine.");
+
+            maxOfflineDuration = factoryConfig.MaxOfflineDuration;
+            if (double.IsNaN(maxOfflineDuration) || double.IsInfinity(maxOfflineDuration) || maxOfflineDuration < 0)
+                throw new ArgumentOutOfRangeException(nameof(factoryConfig.MaxOfflineDuration));
+            var now = DateTimeOffset.UtcNow;
+            if (loadSavedProgress && saveService.TryLoad(factoryConfig, out var restoredFactory, out var restoredBoost, out var restoredUtc))
+            {
+                factory = restoredFactory;
+                boost = restoredBoost;
+                lastIncomeUtc = restoredUtc;
+                ApplyOfflineIncomeAndCheckpoint(now);
+            }
+            else
+            {
+                factory = newFactory;
+                boost = newBoost;
+                lastIncomeUtc = now;
+            }
+        }
+
+        public void RestartProgress()
+        {
+            if (!Application.IsPlaying(gameObject))
+            {
+                if (!saveService.TryClear()) return;
+                factory = null;
+                boost = null;
+                lastIncomeUtc = default;
+                selectedBuilding = null;
+                saveElapsed = 0;
+                uiRefreshElapsed = 0;
+                Debug.Log("JewelryMiniFactory progress restarted.", this);
+                return;
+            }
+
+            try { InitializeGame(false); }
+            catch (Exception exception)
+            {
+                Debug.LogError("Could not restart progress: " + exception.Message, this);
+                return;
+            }
+            // A new live session must not inherit pause flags from the Inspector confirmation dialog.
+            pauseRequested = false;
+            focusLost = false;
+            applicationPaused = !isActiveAndEnabled;
+            var cleared = saveService.TryClear();
+            selectedBuilding = null;
+            saveElapsed = 0;
+            uiRefreshElapsed = 0;
+            machinePopup.Hide();
+            RefreshUi(DateTimeOffset.UtcNow);
+            // Checkpoint the fresh session immediately; lifecycle callbacks now use only this state.
+            SaveProgress();
+            if (cleared) Debug.Log("JewelryMiniFactory progress restarted.", this);
         }
 
         private void Update()
@@ -78,6 +140,8 @@ namespace JewelryMiniFactory.Gameplay
             if (factory == null || applicationPaused) return;
             var now = DateTimeOffset.UtcNow;
             AccrueIncomeUntil(now);
+            saveElapsed += Time.unscaledDeltaTime;
+            if (saveElapsed >= AutoSaveInterval) SaveProgress();
             uiRefreshElapsed += Time.unscaledDeltaTime;
             if (uiRefreshElapsed < UiRefreshInterval) return;
             uiRefreshElapsed = 0;
@@ -97,24 +161,82 @@ namespace JewelryMiniFactory.Gameplay
             if (!isActiveAndEnabled || factory == null || applicationPaused) return;
             var now = DateTimeOffset.UtcNow;
             AccrueIncomeUntil(now);
-            boost.TryActivate(now);
+            if (boost.TryActivate(now)) SaveProgress();
             RefreshUi(now);
         }
 
         private void OnEnable()
         {
-            if (factory != null) lastIncomeUtc = DateTimeOffset.UtcNow;
+            UpdateApplicationActivity();
         }
 
         private void OnApplicationPause(bool paused)
         {
-            if (factory == null) return;
+            pauseRequested = paused;
+            UpdateApplicationActivity();
+        }
+
+        private void OnApplicationFocus(bool focused)
+        {
+            // Game View losing focus to the Inspector is not Android backgrounding.
+            if (Application.isEditor) return;
+            focusLost = !focused;
+            UpdateApplicationActivity();
+        }
+
+        private void OnDisable() => UpdateApplicationActivity();
+
+        private void UpdateApplicationActivity()
+        {
+            var background = pauseRequested || focusLost || !isActiveAndEnabled;
+            if (factory == null)
+            {
+                applicationPaused = background;
+                return;
+            }
+            if (applicationPaused == background) return;
             var now = DateTimeOffset.UtcNow;
-            if (paused && !applicationPaused) AccrueIncomeUntil(now);
-            applicationPaused = paused;
-            // Boost ages in UTC while paused, but offline income is outside this stage.
-            if (!paused) lastIncomeUtc = now;
+            if (background)
+            {
+                AccrueIncomeUntil(now);
+                applicationPaused = true;
+                SaveProgress();
+            }
+            else
+            {
+                applicationPaused = false;
+                ApplyOfflineIncomeAndCheckpoint(now);
+            }
             RefreshUi(now);
+        }
+
+        private void ApplyOfflineIncomeAndCheckpoint(DateTimeOffset now)
+        {
+            try
+            {
+                SaveService.ApplyOfflineIncome(factory, boost, ref lastIncomeUtc, now, maxOfflineDuration);
+            }
+            catch (ArgumentException exception)
+            {
+                // Overflow is rejected atomically by FactoryService; discard this invalid interval.
+                if (now > lastIncomeUtc) lastIncomeUtc = now;
+                Debug.LogWarning("Offline income was rejected: " + exception.Message, this);
+            }
+            SaveProgress();
+        }
+
+        private void SaveProgress()
+        {
+            saveService.TrySave(factory, boost, lastIncomeUtc);
+            saveElapsed = 0;
+        }
+
+        private void OnApplicationQuit()
+        {
+            if (factory == null) return;
+            if (!applicationPaused) AccrueIncomeUntil(DateTimeOffset.UtcNow);
+            applicationPaused = true;
+            SaveProgress();
         }
 
         private void OnUnlockRequested(BuildingView building)
@@ -122,7 +244,7 @@ namespace JewelryMiniFactory.Gameplay
             if (!isActiveAndEnabled || factory == null || applicationPaused) return;
             var now = DateTimeOffset.UtcNow;
             AccrueIncomeUntil(now);
-            factory.TryUnlock(building.MachineId);
+            if (factory.TryUnlock(building.MachineId)) SaveProgress();
             RefreshUi(now);
         }
 
@@ -142,7 +264,7 @@ namespace JewelryMiniFactory.Gameplay
             if (!isActiveAndEnabled || factory == null || applicationPaused || selectedBuilding == null || !machinePopup.IsOpen) return;
             var now = DateTimeOffset.UtcNow;
             AccrueIncomeUntil(now);
-            factory.TryUpgrade(selectedBuilding.MachineId);
+            if (factory.TryUpgrade(selectedBuilding.MachineId)) SaveProgress();
             RefreshUi(now);
         }
 

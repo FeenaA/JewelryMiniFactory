@@ -9,6 +9,7 @@ namespace JewelryMiniFactory.Economy
         bool BoostEnabled { get; }
         double BoostDuration { get; }
         double BoostMultiplier { get; }
+        double MaxOfflineDuration { get; }
         IReadOnlyList<MachineConfig> GetMachines();
     }
 }
