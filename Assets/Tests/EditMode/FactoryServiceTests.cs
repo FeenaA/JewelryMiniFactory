@@ -10,6 +10,9 @@ namespace JewelryMiniFactory.Economy.Tests
         {
             public double InitialBalance { get; set; }
             public double UpgradeCostMultiplier { get; set; } = 1.5;
+            public bool BoostEnabled => true;
+            public double BoostDuration => 30;
+            public double BoostMultiplier => 2;
             public IReadOnlyList<MachineConfig> Machines { get; set; }
             public IReadOnlyList<MachineConfig> GetMachines() => Machines;
         }

@@ -6,6 +6,9 @@ namespace JewelryMiniFactory.Economy
     {
         double InitialBalance { get; }
         double UpgradeCostMultiplier { get; }
+        bool BoostEnabled { get; }
+        double BoostDuration { get; }
+        double BoostMultiplier { get; }
         IReadOnlyList<MachineConfig> GetMachines();
     }
 }

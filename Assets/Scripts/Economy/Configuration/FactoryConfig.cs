@@ -9,6 +9,11 @@ namespace JewelryMiniFactory.Economy
     {
         [SerializeField, Min(0)] private double initialBalance = 0;
         [SerializeField, Min(1)] private double upgradeCostMultiplier = 1.5;
+        [Header("Boost")]
+        [SerializeField] private bool boostEnabled = true;
+        [SerializeField, Min(0.01f)] private double boostDuration = 30;
+        [SerializeField, Min(1)] private double boostMultiplier = 2;
+        [Header("Machines")]
         [SerializeField] private MachineSettings[] machines =
         {
             new MachineSettings("GeodeMine", true, 1, 1, 0, 10),
@@ -18,6 +23,9 @@ namespace JewelryMiniFactory.Economy
 
         public double InitialBalance => initialBalance;
         public double UpgradeCostMultiplier => upgradeCostMultiplier;
+        public bool BoostEnabled => boostEnabled;
+        public double BoostDuration => boostDuration;
+        public double BoostMultiplier => boostMultiplier;
 
         public IReadOnlyList<MachineConfig> GetMachines()
         {
