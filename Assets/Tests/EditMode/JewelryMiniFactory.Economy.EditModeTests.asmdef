@@ -3,6 +3,7 @@
     "rootNamespace": "JewelryMiniFactory.Economy.Tests",
     "references": [
         "JewelryMiniFactory.Economy",
+        "JewelryMiniFactory.Analytics",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
