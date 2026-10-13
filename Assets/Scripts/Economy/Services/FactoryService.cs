@@ -36,8 +36,9 @@ namespace JewelryMiniFactory.Economy
             if (id == null || !State.Machines.TryGetValue(id, out var machine) || machine.Status != MachineStatus.Locked)
                 return false;
             var config = configs[id];
-            if (State.Balance < config.UnlockCost) return false;
-            State.SetBalance(State.Balance - config.UnlockCost);
+            var cost = GetUnlockCost(id);
+            if (State.Balance < cost) return false;
+            State.SetBalance(State.Balance - cost);
             machine.Unlock(config.InitialLevel);
             return true;
         }
@@ -59,13 +60,16 @@ namespace JewelryMiniFactory.Economy
             return machine.Status == MachineStatus.Unlocked ? configs[id].BaseIncome * machine.Level : 0;
         }
 
-        /// <summary>Locked machines have no available upgrade and report zero cost.</summary>
+        /// <summary>Returns the whole-coin unlock price used by TryUnlock.</summary>
+        public double GetUnlockCost(string id) => Math.Ceiling(configs[id].UnlockCost);
+
+        /// <summary>Returns the whole-coin upgrade price; locked machines report zero cost.</summary>
         public double GetNextUpgradeCost(string id)
         {
             var machine = State.Machines[id];
             if (machine.Status == MachineStatus.Locked) return 0;
             var baseCost = configs[id].BaseUpgradeCost;
-            return baseCost == 0 ? 0 : baseCost * Math.Pow(upgradeCostMultiplier, machine.Level - 1);
+            return baseCost == 0 ? 0 : Math.Ceiling(baseCost * Math.Pow(upgradeCostMultiplier, machine.Level - 1));
         }
 
         public double GetTotalIncomePerSecond()

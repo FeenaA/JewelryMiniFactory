@@ -750,6 +750,7 @@ GameObject:
   - component: {fileID: 1051316363599496864}
   - component: {fileID: 6218277708109295622}
   - component: {fileID: 288611578666274517}
+  - component: {fileID: 2128992391586295359}
   m_Layer: 0
   m_Name: Building
   m_TagString: Untagged
@@ -860,6 +861,26 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2128992391586295359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7056797810782331370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b9057227904486cb67b4d66aceeca10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JewelryMiniFactory.UI.BuildingView
+  machineId: 
+  displayName: 
+  buildingButton: {fileID: 288611578666274517}
+  lockedState: {fileID: 6182831584575921147}
+  unlockedState: {fileID: 8463233621178570459}
+  unlockButton: {fileID: 5517482430220133737}
+  unlockCostText: {fileID: 2674578232196045503}
+  levelText: {fileID: 7233376972667998449}
 --- !u!1 &8451678078349149487
 GameObject:
   m_ObjectHideFlags: 0
