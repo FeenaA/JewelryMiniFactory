@@ -27,6 +27,7 @@ namespace JewelryMiniFactory.Purchasing
         public bool BlocksGameplayInput { get; private set; }
         public string Status { get; private set; } = "STORE LOADING";
         public event Action StateChanged;
+        public event Action<string, bool> PurchaseFailed;
 
         public IapPurchaseService(Func<string, bool> fulfill)
         {
@@ -83,6 +84,7 @@ namespace JewelryMiniFactory.Purchasing
                 purchaseRequested = false;
                 BlocksGameplayInput = false;
                 Notify("PURCHASE FAILED: " + exception.Message);
+                ReportPurchaseFailure(exception.Message, false);
             }
         }
 
@@ -176,6 +178,15 @@ namespace JewelryMiniFactory.Purchasing
             purchaseRequested = false;
             Notify(order.FailureReason == PurchaseFailureReason.UserCancelled ? "PURCHASE CANCELLED" :
                 $"PURCHASE FAILED: {order.FailureReason}, {order.Details}");
+            ReportPurchaseFailure(order.FailureReason.ToString(), order.FailureReason == PurchaseFailureReason.UserCancelled);
+        }
+
+        private void ReportPurchaseFailure(string reason, bool cancelled)
+        {
+            if (disposed || PurchaseFailed == null) return;
+            foreach (Action<string, bool> handler in PurchaseFailed.GetInvocationList())
+                try { handler(reason, cancelled); }
+                catch (Exception) { /* Optional observers cannot affect purchase processing. */ }
         }
 
         private void OnDeferred(DeferredOrder order)
@@ -225,6 +236,7 @@ namespace JewelryMiniFactory.Purchasing
             store.OnPurchaseFailed -= OnFailed;
             store.OnPurchaseDeferred -= OnDeferred;
             StateChanged = null;
+            PurchaseFailed = null;
         }
     }
 }

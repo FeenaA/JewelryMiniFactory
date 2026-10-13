@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using JewelryMiniFactory.Analytics;
 using JewelryMiniFactory.Economy;
 using JewelryMiniFactory.UI;
 using JewelryMiniFactory.Purchasing;
@@ -25,6 +27,8 @@ namespace JewelryMiniFactory.Gameplay
         private const float UiRefreshInterval = 0.1f;
         private const float AutoSaveInterval = 15;
         private readonly SaveService saveService = new SaveService();
+        private readonly AnalyticsService analytics = new AnalyticsService(new ConsoleAnalyticsProvider());
+        private DateTimeOffset? reportedBoostEndUtc;
         private FactoryService factory;
         private BoostService boost;
         private IapPurchaseService iap;
@@ -45,6 +49,7 @@ namespace JewelryMiniFactory.Gameplay
             try
             {
                 InitializeGame(true);
+                analytics.Track("game_started");
             }
             catch (Exception exception)
             {
@@ -118,6 +123,7 @@ namespace JewelryMiniFactory.Gameplay
                     Debug.LogWarning("Assign the purchase Button and its Text (TMP) to GameController to enable the purchase UI.", this);
                 iap = new IapPurchaseService(FulfillPurchase);
                 iap.StateChanged += OnIapStateChanged;
+                iap.PurchaseFailed += OnPurchaseFailed;
                 RefreshIapUi();
                 await iap.InitializeAsync();
             }
@@ -129,6 +135,7 @@ namespace JewelryMiniFactory.Gameplay
             if (factory == null || !purchaseHistoryReady) return false;
             var now = DateTimeOffset.UtcNow;
             if (!applicationPaused) AccrueIncomeUntil(now);
+            var wasProcessed = factory.State.ProcessedTransactionIds.Contains(transactionId);
             var fulfilled = factory.TryCreditPurchase(transactionId, factoryConfig.CoinsPackSmallReward, (balance, ids) =>
             {
                 var data = SaveService.Capture(factory, boost, lastIncomeUtc);
@@ -138,10 +145,26 @@ namespace JewelryMiniFactory.Gameplay
             });
             if (fulfilled)
             {
+                if (!wasProcessed)
+                    analytics.Track("purchase_succeeded", new Dictionary<string, object>
+                    {
+                        ["product_id"] = IapPurchaseService.ProductId,
+                        ["amount"] = factoryConfig.CoinsPackSmallReward
+                    });
                 saveElapsed = 0;
                 RefreshUi(now);
             }
             return fulfilled;
+        }
+
+        private void OnPurchaseFailed(string reason, bool cancelled)
+        {
+            analytics.Track("purchase_failed", new Dictionary<string, object>
+            {
+                ["product_id"] = IapPurchaseService.ProductId,
+                ["reason"] = reason,
+                ["cancelled"] = cancelled
+            });
         }
 
         private void OnBuyCoinsRequested()
@@ -222,6 +245,18 @@ namespace JewelryMiniFactory.Gameplay
             if (now < lastIncomeUtc) return;
             factory.AccrueIncome(boost.GetEffectiveElapsedSeconds(lastIncomeUtc, now));
             lastIncomeUtc = now;
+            TrackBoostFinished(now);
+        }
+
+        private void TrackBoostFinished(DateTimeOffset now)
+        {
+            if (!boost.EndsAtUtc.HasValue || now < boost.EndsAtUtc.Value || reportedBoostEndUtc == boost.EndsAtUtc) return;
+            reportedBoostEndUtc = boost.EndsAtUtc;
+            analytics.Track("boost_finished", new Dictionary<string, object>
+            {
+                ["duration"] = (boost.EndsAtUtc.Value - boost.StartedAtUtc.Value).TotalSeconds,
+                ["multiplier"] = boost.Multiplier
+            });
         }
 
         private void OnBoostRequested()
@@ -229,7 +264,15 @@ namespace JewelryMiniFactory.Gameplay
             if (!isActiveAndEnabled || factory == null || applicationPaused || IsGameInputBlocked) return;
             var now = DateTimeOffset.UtcNow;
             AccrueIncomeUntil(now);
-            if (boost.TryActivate(now)) SaveProgress();
+            if (boost.TryActivate(now))
+            {
+                SaveProgress();
+                analytics.Track("boost_started", new Dictionary<string, object>
+                {
+                    ["duration"] = boost.DurationSeconds,
+                    ["multiplier"] = boost.Multiplier
+                });
+            }
             RefreshUi(now);
         }
 
@@ -282,7 +325,14 @@ namespace JewelryMiniFactory.Gameplay
         {
             try
             {
-                SaveService.ApplyOfflineIncome(factory, boost, ref lastIncomeUtc, now, maxOfflineDuration);
+                var offlineSeconds = Math.Min(Math.Max(0, (now - lastIncomeUtc).TotalSeconds), maxOfflineDuration);
+                var amount = SaveService.ApplyOfflineIncome(factory, boost, ref lastIncomeUtc, now, maxOfflineDuration);
+                if (amount > 0)
+                    analytics.Track("offline_income_applied", new Dictionary<string, object>
+                    {
+                        ["amount"] = amount,
+                        ["offline_seconds"] = offlineSeconds
+                    });
             }
             catch (ArgumentException exception)
             {
@@ -290,6 +340,7 @@ namespace JewelryMiniFactory.Gameplay
                 if (now > lastIncomeUtc) lastIncomeUtc = now;
                 Debug.LogWarning("Offline income was rejected: " + exception.Message, this);
             }
+            TrackBoostFinished(now);
             SaveProgress();
         }
 
@@ -312,7 +363,12 @@ namespace JewelryMiniFactory.Gameplay
             if (!isActiveAndEnabled || factory == null || applicationPaused || IsGameInputBlocked) return;
             var now = DateTimeOffset.UtcNow;
             AccrueIncomeUntil(now);
-            if (factory.TryUnlock(building.MachineId)) SaveProgress();
+            var cost = factory.GetUnlockCost(building.MachineId);
+            if (factory.TryUnlock(building.MachineId))
+            {
+                SaveProgress();
+                TrackMachineAction("machine_unlocked", building.MachineId, cost);
+            }
             RefreshUi(now);
         }
 
@@ -332,11 +388,26 @@ namespace JewelryMiniFactory.Gameplay
             if (!isActiveAndEnabled || factory == null || applicationPaused || IsGameInputBlocked || selectedBuilding == null || !machinePopup.IsOpen) return;
             var now = DateTimeOffset.UtcNow;
             AccrueIncomeUntil(now);
-            if (factory.TryUpgrade(selectedBuilding.MachineId)) SaveProgress();
+            var cost = factory.GetNextUpgradeCost(selectedBuilding.MachineId);
+            if (factory.TryUpgrade(selectedBuilding.MachineId))
+            {
+                SaveProgress();
+                TrackMachineAction("machine_upgraded", selectedBuilding.MachineId, cost);
+            }
             RefreshUi(now);
         }
 
         private void OnPopupClosed() => selectedBuilding = null;
+
+        private void TrackMachineAction(string eventName, string id, double cost)
+        {
+            analytics.Track(eventName, new Dictionary<string, object>
+            {
+                ["machine_id"] = id,
+                ["level"] = factory.State.Machines[id].Level,
+                ["cost"] = cost
+            });
+        }
 
         private void RefreshUi(DateTimeOffset now)
         {
@@ -389,6 +460,7 @@ namespace JewelryMiniFactory.Gameplay
             if (iap != null)
             {
                 iap.StateChanged -= OnIapStateChanged;
+                iap.PurchaseFailed -= OnPurchaseFailed;
                 iap.Dispose();
             }
             if (boostButton != null) boostButton.onClick.RemoveListener(OnBoostRequested);
